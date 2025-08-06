@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <ctype.h>
+#include <cstring>
 
 //Matricula,CPF,Nome,Nota,Idade,Curso,Cidade
 //A0000000,915.216.859-08,Wallace Sampaio,20.35,23,Direito,Rio de Janeiro
@@ -31,6 +32,20 @@ void inicializa(){
     a.quantidade = 0;
 }
 
+//declaracao de funcoes
+bool insere(Aluno *y); 
+Aluno *lerAluno();
+void imprimirAlunos();  
+FILE * abrir_arquivo( const char * arquivo, const char * modo);
+void processoInsercao();
+void menu();
+int escolha();
+int compararString(char * a, char * b);
+bool insere(Aluno *y, char * nome, char * cpf);
+bool buscarPorMatricula(char * matricula);
+bool buscarPorCpf(char * cpf);
+
+//============================================================================================
 bool insere(Aluno *y){
     if(y == NULL) return false;
     if(a.quantidade == 0){
@@ -40,18 +55,46 @@ bool insere(Aluno *y){
     }
     else{
         Aluno * var = a.inicio;
-        while (var->prox != NULL)
-        {
+        while ( var->prox != NULL && compararString(var->nome, y->nome) < 0){
             var = var->prox;
         }
-        var->prox = y;
-        y->ante = var;
-        a.fim = y;
-        a.quantidade++;
+
+        if(buscarPorCpf(y->cpf) == false && buscarPorMatricula(y->matricula) == false){
+            //esse CPF nao foi cadastrado
+            if(var->prox == NULL && var->ante != NULL){
+                //ultimo
+                int n = compararString(var->nome, y->nome);
+                if(n < 0){
+                    var->prox = y;
+                    y->ante = var;
+                    y->prox = NULL;
+                    a.fim = y;
+                }
+                else{
+                    var->ante->prox = y;
+                    y->prox = var;
+                    var->ante = y;
+                    a.fim = var;
+                }
+                
+            }
+            else if (var->ante == NULL){
+                //primeiro
+                a.inicio = y;
+                y->prox = var;
+                a.quantidade++;
+                var->ante = y;
+            }
+            else{
+                //meio
+                var->ante->prox = y;
+                var->ante = y;
+                y->prox = var;
+            }
+        }
     }
     return true;
 }
-
 
 Aluno *lerAluno(){
     
@@ -62,10 +105,12 @@ Aluno *lerAluno(){
 }
 
 void imprimirAlunos(){
+
+    system("cls");
+
     Aluno * x = a.inicio;
 
     while (x != NULL){
-        printf("\n\n");
         printf("%s -", x->matricula);
         printf(" %s -", x->cpf);
         printf(" %s -", x->nome);
@@ -73,13 +118,15 @@ void imprimirAlunos(){
         printf(" %d -", x->idade);
         printf(" %s -", x->curso);
         printf(" %s", x->cidade);
-        printf("\n\n");
+        printf("\n");
         x = x->prox;
 
     }
+
+    system("pause");
 }
 
-FILE * abrir_arquivo(char * arquivo, char * modo){
+FILE * abrir_arquivo(const char * arquivo, const char * modo){
 
 	FILE * arq;
 	arq = fopen(arquivo, modo);
@@ -105,13 +152,21 @@ void processoInsercao(){
     fclose(arq);
 }
 
+int compararString(char * a, char * b){
+    int n = strcmp(a, b);
+    if(n == 0) return 1; //iguais
+    else if (n < 0) return -1; // a vem primeiro que b
+    else return 0; // b vem primeiro que a
+}
+
 int escolha(){
     
     int op;
     system("cls");
-    printf("\n\n\t\tMENU DE PESQUISA\n\n");
+    printf("\t\tMENU DE PESQUISA\n\n");
     printf("1 - PESQUISAR POR CPF\n");
     printf("2 - PESQUISAR POR MATRICULA\n");
+    printf("3 - EXCLUIR\n");
     printf("4 - IMPRIMIR\n");
     printf("0 - SAIR\n\n");
     
@@ -120,7 +175,7 @@ int escolha(){
     return op;
 }
 
-void menu(int op){
+void menu(){
     int x;
     do
     {
@@ -128,33 +183,61 @@ void menu(int op){
         switch (x)
         {
         case 1:
-
+            //buscarPorCpf(); não funciona ainda
         break;
         case 2:
+            //buscarPorMatricula(); 
         break;
-        
+        case 3:
+        break;
+        case 4:
+            imprimirAlunos();
+        break;
         default:
             break;
         }
-    } while (op != 0);
-    
+    } while (x != 0);
 }
 
-bool buscarPorMatricula(){
-    char matricula[9];
-    printf("\nDigite a Matricula: ");
-    scanf("%s", matricula);
+bool buscarPorMatricula(char * matricula){
 
-    Aluno * percorre = a.inicio;
+    system("cls");
     
+    Aluno * percorre = a.inicio;
 
+    while (percorre != NULL){
+        if(strcmp(percorre->matricula, matricula) == 0){
+            return true;
+            break;
+        }
+        percorre = percorre->prox;
+    }
+    
+    return false;
+}
+
+bool buscarPorCpf(char * cpf){
+
+    system("cls");
+    
+    Aluno * percorre = a.inicio;
+
+    while (percorre != NULL){
+        if(strcmp(percorre->cpf, cpf) == 0){
+            return true;
+            break;
+        }
+        percorre = percorre->prox;
+    }
+    
+    return false;
 }
 
 int main(){
 
     inicializa();
     processoInsercao();
-    imprimirAlunos();
+    menu();
 
     return 0;
 }
