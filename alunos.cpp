@@ -42,8 +42,11 @@ void menu();
 int escolha();
 int compararString(char * a, char * b);
 bool insere(Aluno *y, char * nome, char * cpf);
-bool buscarPorMatricula(char * matricula);
-bool buscarPorCpf(char * cpf);
+Aluno * verificacaoMatricula(char * matricula);
+Aluno * verificacaoCPF(char * cpf);
+void pesquisaPorMatricula();
+void pesquisarPorCPF();
+void excluir(Aluno * aluno);
 
 //============================================================================================
 bool insere(Aluno *y){
@@ -59,7 +62,7 @@ bool insere(Aluno *y){
             var = var->prox;
         }
 
-        if(buscarPorCpf(y->cpf) == false && buscarPorMatricula(y->matricula) == false){
+        if(verificacaoCPF(y->cpf) == NULL && verificacaoMatricula(y->matricula) == NULL){
             //esse CPF nao foi cadastrado
             if(var->prox == NULL && var->ante != NULL){
                 //ultimo
@@ -183,10 +186,10 @@ void menu(){
         switch (x)
         {
         case 1:
-            //buscarPorCpf(); não funciona ainda
+            pesquisarPorCPF();
         break;
         case 2:
-            //buscarPorMatricula(); 
+            pesquisaPorMatricula(); 
         break;
         case 3:
         break;
@@ -199,7 +202,7 @@ void menu(){
     } while (x != 0);
 }
 
-bool buscarPorMatricula(char * matricula){
+Aluno * verificacaoMatricula(char * matricula){
 
     system("cls");
     
@@ -207,16 +210,16 @@ bool buscarPorMatricula(char * matricula){
 
     while (percorre != NULL){
         if(strcmp(percorre->matricula, matricula) == 0){
-            return true;
+            return percorre;
             break;
         }
         percorre = percorre->prox;
     }
     
-    return false;
+    return NULL;
 }
 
-bool buscarPorCpf(char * cpf){
+Aluno * verificacaoCPF(char * cpf){
 
     system("cls");
     
@@ -224,13 +227,103 @@ bool buscarPorCpf(char * cpf){
 
     while (percorre != NULL){
         if(strcmp(percorre->cpf, cpf) == 0){
-            return true;
+            return percorre;
             break;
         }
         percorre = percorre->prox;
     }
     
-    return false;
+    return NULL;
+}
+
+void pesquisaPorMatricula(){
+    system("cls");
+    char matricula[9];
+    printf("Digite a matricula: ");
+    scanf("%s", matricula);
+
+    Aluno * existe = verificacaoMatricula(matricula);
+    if(existe != NULL){
+        printf("Matricula: %s\n", existe->matricula);
+        printf("CPF: %s\n", existe->cpf);
+        printf("Nome: %s\n", existe->nome);
+        printf("Nota: %.2lf\n", existe->nota);
+        printf("Idade: %d\n", existe->idade);
+        printf("Curso: %s\n", existe->curso);
+        printf("Cidade: %s\n", existe->cidade);
+
+        printf("\nDeseja excluir esse aluno? (S/N): ");
+        char opcao;
+        scanf(" %c", &opcao);       
+        if(toupper(opcao) == 'S'){
+            excluir(existe);
+            printf("Aluno excluido com sucesso.\n");
+        }
+        else{
+            printf("Exclusao cancelada.\n");
+        }
+    }
+    else{
+        printf("Matricula nao encontrada.\n");
+    }
+    system("pause");
+}
+
+void pesquisarPorCPF(){
+    system("cls");
+    char cpf[15];
+    printf("Digite o CPF: ");
+    scanf("%s", cpf);
+
+    Aluno * existe = verificacaoCPF(cpf);
+    if(existe != NULL){
+        printf("Matricula: %s\n", existe->matricula);
+        printf("CPF: %s\n", existe->cpf);
+        printf("Nome: %s\n", existe->nome);
+        printf("Nota: %.2lf\n", existe->nota);
+        printf("Idade: %d\n", existe->idade);
+        printf("Curso: %s\n", existe->curso);
+        printf("Cidade: %s\n", existe->cidade);
+
+        printf("\nDeseja excluir esse aluno? (S/N): ");
+        char opcao;   
+        scanf(" %c", &opcao);       
+        if(toupper(opcao) == 'S'){  
+            excluir(existe);
+            printf("Aluno excluido com sucesso.\n");
+        }
+        else{
+            printf("Exclusao cancelada.\n");
+        }
+    }
+    else{
+        printf("CPF nao encontrado.\n");
+    }
+    system("pause");
+}
+
+void  excluir(Aluno * aluno){
+    Aluno * aux = aluno;
+    if(aux == a.inicio && aux == a.fim){
+        //so tem um aluno
+        a.inicio = NULL;
+        a.fim = NULL;
+    }
+    else if(aux == a.inicio){
+        //primeiro
+        a.inicio = aux->prox;
+        aux->prox->ante = NULL;
+    }
+    else if(aux == a.fim){
+        //ultimo
+        a.fim = aux->ante;
+        aux->ante->prox = NULL;
+    }
+    else{
+        //meio
+        aux->ante->prox = aux->prox;
+        aux->prox->ante = aux->ante;
+    }
 }
 
 int main(){
