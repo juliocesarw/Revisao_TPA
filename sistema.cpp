@@ -24,6 +24,8 @@ struct Alunos{
 
 Alunos a[100];
 
+int insercao = 0;
+
 void inicializa(){
     for (int i = 0; i < 100; i++)
     {
@@ -111,12 +113,13 @@ bool insere(Aluno *y, int indiceHash){
             }
             else{
                 //ta no meio
-                y = percorre->ante;
-                percorre->ante->prox = y;
                 y->prox = percorre;
+                percorre->ante->prox = y;
+                y->ante = percorre->ante;
                 percorre->ante = y;
                 a[indiceHash].quantidade++;
             }
+            insercao++;
         }
         else{
             return false;        
@@ -219,20 +222,40 @@ void menu(){
     } while (x != 0);
 }
 
+// Aluno * verificacaoCPF(char * cpf, int indice){
+
+//     //system("cls");
+    
+//     Aluno * percorre = a[indice].inicio;
+
+//     while (percorre != NULL){
+//         if(strcmp(percorre->cpf, cpf) == 0){
+//             return percorre;
+//             break;
+//         }
+//         percorre = percorre->prox;
+//     }
+    
+//     return NULL;
+// }
+
 Aluno * verificacaoCPF(char * cpf, int indice){
 
     //system("cls");
-    
+    int contador=0;
+    int digito = retornaValorCPF(cpf);
     Aluno * percorre = a[indice].inicio;
 
     while (percorre != NULL){
         if(strcmp(percorre->cpf, cpf) == 0){
+            printf("indice %d: %d\n",digito,contador);
             return percorre;
             break;
         }
+        contador++;
         percorre = percorre->prox;
     }
-    
+    printf("indice %d: %d\n",digito,contador);
     return NULL;
 }
 
@@ -315,6 +338,7 @@ int main(){
 
     fim = clock();
     printf("Tempo de leitura: %lf segundos\n", (double)(fim - inicio) / CLOCKS_PER_SEC);
+    printf("A o numero de insercao foi %d\n", insercao);
     system("pause");
     menu();
 
