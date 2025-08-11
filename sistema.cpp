@@ -43,9 +43,8 @@ void menu();
 int escolha();
 bool insere(Aluno *y, int indiceHash);
 Aluno * verificacaoCPF(char * cpf, int indice);
-void pesquisaPorMatricula();
 void pesquisarPorCPF();
-void excluir(Aluno * aluno, int indice);
+void excluir(Aluno * ponteiro, int indice);
 int retornaValorCPF(char * cpf);
 
 //============================================================================================
@@ -176,9 +175,6 @@ void processoInsercao(){
     FILE * arq;
     arq = abrir_arquivo("../alunos.csv", "r");
 
-    // int i = 1;
-    
-
     while(!feof(arq)){
         Aluno *c = lerAluno();
         fscanf(arq, "%[^,], %[^,], %[^,] , %lf, %d, %[^,], %[^,\n] ", c->matricula, c->cpf, c->nome, &c->nota, &c->idade, c->curso, c->cidade);
@@ -191,7 +187,7 @@ void processoInsercao(){
 int escolha(){
     
     int op;
-    //system("cls");
+    system("cls");
     printf("\t\tMENU DE PESQUISA\n\n");
     printf("1 - PESQUISAR POR CPF\n");
     printf("2 - IMPRIMIR\n");
@@ -216,7 +212,9 @@ void menu(){
             imprimirAlunos();
         break;
         default:
-            break;
+            printf("\n\nopcao inválida!!\n\n");
+            system("pause");
+        break;
         }
     } while (x != 0);
 }
@@ -243,11 +241,11 @@ void pesquisarPorCPF(){
     char cpf[15];
     printf("Digite o CPF: ");
     scanf("%s", cpf);
-    int i = 0;
-    Aluno * existe = verificacaoCPF(cpf, atoi(1 + strrchr(cpf, '-')) );
+    int i = retornaValorCPF(cpf);
+    Aluno * existe = verificacaoCPF(cpf, i); // retorna um ponteiro para o registo
 
     if(existe != NULL){
-        printf("Matricula: %s\n", existe->matricula);
+        printf("\nMatricula: %s\n", existe->matricula);
         printf("CPF: %s\n", existe->cpf);
         printf("Nome: %s\n", existe->nome);
         printf("Nota: %.2lf\n", existe->nota);
@@ -272,8 +270,8 @@ void pesquisarPorCPF(){
     system("pause");
 }
 
-void  excluir(Aluno * aluno, int indice){
-    Aluno * aux = aluno;
+void  excluir(Aluno * ponteiro, int indice){
+    Aluno * aux = ponteiro;
     if(aux == a[indice].inicio && aux == a[indice].fim){
         //so tem um aluno
         a[indice].inicio = NULL;
@@ -282,17 +280,20 @@ void  excluir(Aluno * aluno, int indice){
     else if(aux == a[indice].inicio){
         //primeiro
         a[indice].inicio = aux->prox;
-        aux->prox->ante = NULL;
+        a[indice].inicio->ante = NULL;
+        free(aux);
     }
     else if(aux == a[indice].fim){
         //ultimo
         a[indice].fim = aux->ante;
-        aux->ante->prox = NULL;
+        a[indice].fim->prox = NULL;
+        free(aux);
     }
     else{
         //meio
         aux->ante->prox = aux->prox;
         aux->prox->ante = aux->ante;
+        free(aux);
     }
 }
 
@@ -314,7 +315,7 @@ int main(){
 
     fim = clock();
     printf("Tempo de leitura: %lf segundos\n", (double)(fim - inicio) / CLOCKS_PER_SEC);
-
+    system("pause");
     menu();
 
     // 2 segundos de inserção 
