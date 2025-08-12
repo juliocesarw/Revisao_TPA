@@ -342,8 +342,8 @@ int main(){
     system("pause");
     menu();
 
-    // 2 segundos de inserção 
-
+    //17 MINUTOS DE INSERCAO PELO TERMINAL DO VSCODE
+    //13 MINUTOS DE INSERCAO PELO TERMINAL DO WINDOWNS
 
     return 0;
 }
