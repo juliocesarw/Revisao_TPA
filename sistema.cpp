@@ -52,19 +52,23 @@ int retornaValorCPF(char * cpf);
 //============================================================================================
 bool insere(Aluno *y, int indiceHash){
 
+    //caso a alocacao de memoria tenha falhado
     if(y == NULL) return false;
+
+    //caso seja a primeira insercao no indice
     if(a[indiceHash].quantidade == 0){
         a[indiceHash].inicio = y;
         a[indiceHash].fim = y;
         a[indiceHash].quantidade++;
     }
-    else{
+    else{//caso nao seja a primeira insercao, e percorrido ate o lugar certo de inserir
         Aluno * percorre = a[indiceHash].inicio;
         while (percorre->prox != NULL && strcmp(percorre->nome, y->nome) < 0)
         {
             percorre = percorre->prox;
         }
 
+        //verificacao se ja existe um cadastro com esse cpf
         if(verificacaoCPF(y->cpf, indiceHash) == NULL){
             if(percorre->ante == NULL){
                 //talvez vai ser o primeiro da lista
@@ -121,7 +125,7 @@ bool insere(Aluno *y, int indiceHash){
             }
             insercao++;
         }
-        else{
+        else{//se ja houver alguem, retorna falso
             return false;        
         }
     }
@@ -129,6 +133,7 @@ bool insere(Aluno *y, int indiceHash){
     return true;
 }
 
+//funcao para fazer alocacao de memoria do tananho da struct
 Aluno *lerAluno(){
     
     Aluno *b = new Aluno;
@@ -137,6 +142,7 @@ Aluno *lerAluno(){
     return b;
 }
 
+//funcao para imprimir o aluno na busca
 void imprimirAlunos(){
 
     // system("cls");
@@ -162,6 +168,7 @@ void imprimirAlunos(){
     system("pause");
 }
 
+//funcao para abrir o arquivo
 FILE * abrir_arquivo(const char * arquivo, const char * modo){
 
 	FILE * arq;
@@ -174,6 +181,7 @@ FILE * abrir_arquivo(const char * arquivo, const char * modo){
 
 }
 
+//funcao para fazer todo o processo de insercao, desde a leitura ate a gravacao na struct
 void processoInsercao(){
     FILE * arq;
     arq = abrir_arquivo("../alunos.csv", "r");
@@ -187,6 +195,7 @@ void processoInsercao(){
     fclose(arq);
 }
 
+//funcao de menu
 int escolha(){
     
     int op;
@@ -201,6 +210,8 @@ int escolha(){
     return op;
 }
 
+
+//funcao de menu
 void menu(){
     int x;
     do
@@ -222,23 +233,7 @@ void menu(){
     } while (x != 0);
 }
 
-// Aluno * verificacaoCPF(char * cpf, int indice){
-
-//     //system("cls");
-    
-//     Aluno * percorre = a[indice].inicio;
-
-//     while (percorre != NULL){
-//         if(strcmp(percorre->cpf, cpf) == 0){
-//             return percorre;
-//             break;
-//         }
-//         percorre = percorre->prox;
-//     }
-    
-//     return NULL;
-// }
-
+//funcao que verifica se o CPF ja foi cadastrado e printa quantos indices estao sendo vistos
 Aluno * verificacaoCPF(char * cpf, int indice){
 
     //system("cls");
@@ -259,6 +254,7 @@ Aluno * verificacaoCPF(char * cpf, int indice){
     return NULL;
 }
 
+//funcao de pesquisar e imprimir, dando a opcao de excluir o cpf desejado
 void pesquisarPorCPF(){
     //system("cls");
     char cpf[15];
@@ -293,6 +289,7 @@ void pesquisarPorCPF(){
     system("pause");
 }
 
+//funcao para excluir o aluno do sistema
 void  excluir(Aluno * ponteiro, int indice){
     Aluno * aux = ponteiro;
     if(aux == a[indice].inicio && aux == a[indice].fim){
@@ -320,6 +317,7 @@ void  excluir(Aluno * ponteiro, int indice){
     }
 }
 
+// funcao para retornar o indice para a tabela hash
 int retornaValorCPF(char * cpf){
     char var[3];
     var[0] = cpf[12];
@@ -328,6 +326,7 @@ int retornaValorCPF(char * cpf){
     return atoi(var);
 }
 
+//funcao principal
 int main(){
 
     time_t inicio, fim;
@@ -342,8 +341,7 @@ int main(){
     system("pause");
     menu();
 
-    //17 MINUTOS DE INSERCAO PELO TERMINAL DO VSCODE
-    //13 MINUTOS DE INSERCAO PELO TERMINAL DO WINDOWNS
+    //9 MINUTOS NA INSERÇÃO
 
     return 0;
 }
