@@ -22,10 +22,10 @@ struct Alunos{
     int quantidade;
 };
 
-Alunos a[100]; //100
+// Alunos a[100]; //100
 // Alunos a[1000]; //mil 
 // Alunos a[10000]; //10k
-// Alunos a[100000]; //100k
+Alunos a[100000]; //100k
 
 // struct para armazenar os 10 nomes
 struct nomes
@@ -47,7 +47,7 @@ int insercao = 0;
 int cpfRepetido = 0;
 
 void inicializa(){
-    for (int i = 0; i < 100; i++) // vou alterar de acordo com a necessidade
+    for (int i = 0; i < 100000; i++) // vou alterar de acordo com a necessidade
     {
         a[i].inicio = NULL;
         a[i].fim = NULL;
@@ -72,12 +72,12 @@ int retornaValorCPF(char * cpf);
 
 //============================================================================================
 bool insere(Aluno *y, int indiceHash) {
-    if (y == nullptr) return false;
+    if (y == NULL) return false;
 
     Alunos &lista = a[indiceHash];
 
     // Verifica se o CPF já existe
-    if (verificacaoCPF(y->cpf, indiceHash) != nullptr) {
+    if (verificacaoCPF(y->cpf, indiceHash) != NULL) {
         cpfRepetido++;
         return false;
     }
@@ -92,7 +92,7 @@ bool insere(Aluno *y, int indiceHash) {
 
     // Percorre para achar a posição correta por nome
     Aluno *atual = lista.inicio;
-    while (atual != nullptr && strcmp(atual->nome, y->nome) < 0) {
+    while (atual != NULL && strcmp(atual->nome, y->nome) < 0) {
         atual = atual->prox;
     }
 
@@ -101,7 +101,7 @@ bool insere(Aluno *y, int indiceHash) {
         y->prox = lista.inicio;
         lista.inicio->ante = y;
         lista.inicio = y;
-    } else if (atual == nullptr) {
+    } else if (atual == NULL) {
         // Inserir no final
         y->ante = lista.fim;
         lista.fim->prox = y;
@@ -305,19 +305,19 @@ void  excluir(Aluno * ponteiro, int indice){
 // funcao para retornar o indice para a tabela hash
 int retornaValorCPF(char * cpf){
 
-    char var[3];
-    var[0] = cpf[12];
-    var[1] = cpf[13];
-    // var[2] = cpf[13];
-    // var[3] = cpf[13];
-    // var[4] = cpf[13];
-    var[2] = '\0';
+    char var[6];
+    var[0] = cpf[8];
+    var[1] = cpf[9];
+    var[2] = cpf[10];
+    var[3] = cpf[12];
+    var[4] = cpf[13];
+    var[5] = '\0';
     return atoi(var);
 }
 
 bool pesquisaPorNome(char * nome){
 
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 100000; i++)
     {
         Aluno * percorre = a[i].inicio;
         while (percorre != NULL){
@@ -345,7 +345,6 @@ void pesquisaGeral(){
         ponteiro = ponteiro->prox; // sempre avança
     }
 }
-
 
 void inicializaNomes(){
     n.inicio = NULL;
@@ -423,7 +422,7 @@ int main(){
     
     tempo();
 
-    // HASH DE 100 - MELHOR TEMPO: 10 MINUTOS NA INSERÇÃO E 0.5 SEGUNDOS NA BUSCA DE 10 NOMES
+    // HASH DE 100 - MELHOR TEMPO: 10 MINUTOS NA INSERÇÃO E 0.1 SEGUNDOS NA BUSCA DE 10 NOMES
     // HASH DE 1000 - MELHOR TEMPO: 2 MINUTO E 6 SEGUNDOS NA INSERÇÃO E 0.1 SEGUNDOS NA BUSCA DE 10 NOMES
     // HASH DE 10000 - MELHOR TEMPO: 1 MINUTO E 14 SEGUNDOS MINUTOS NA INSERÇÃO E 0.1 SEGUNDOS NA BUSCA DE 10 NOMES
     // HASH DE 100000 - MELHOR TEMPO: 57 SEGUNDOS NA INSERÇÃO E 0.2 SEGUNDOS NA BUSCA DE 10 NOMES
