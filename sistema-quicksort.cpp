@@ -23,6 +23,7 @@ struct Alunos{
 };
 
 Alunos a[100];
+int repetidos = 0;
 
 void inicializa(){
     for (int i = 0; i < 100; i++) // vou alterar de acordo com a necessidade
@@ -46,36 +47,41 @@ Aluno * verificacaoCPF(char * cpf, int indice);
 void pesquisarPorCPF();
 void excluir(Aluno * ponteiro, int indice);
 int retornaValorCPF(char * cpf);
+int compareString(const void *a, const void *b);
 
 //============================================================================================
 bool insere(Aluno *y, int indiceHash) {
     if (y == NULL) return false;
 
-    Alunos &lista = a[indiceHash];
-
     // Lista vazia
-    if (lista.quantidade == 0) {
-        lista.inicio = lista.fim = y;
-        lista.quantidade++;
+    if (a[indiceHash].quantidade == 0) {
+        a[indiceHash].inicio = a[indiceHash].fim = y;
+        a[indiceHash].quantidade++;
         return true;
     }
 
     // Percorre para achar a posição correta por nome
-    Aluno *atual = lista.inicio;
+    Aluno *atual = a[indiceHash].inicio;
     while (atual != NULL && strcmp(atual->cpf, y->cpf) < 0) {
         atual = atual->prox;
     }
 
-    if (atual == lista.inicio) {
+    //ja existe igual
+    if (atual != NULL && strcmp(atual->cpf, y->cpf) == 0){
+        repetidos++;
+        return false;
+    }
+    
+    if (atual == a[indiceHash].inicio) {
         // Inserir no início
-        y->prox = lista.inicio;
-        lista.inicio->ante = y;
-        lista.inicio = y;
+        y->prox = a[indiceHash].inicio;
+        a[indiceHash].inicio->ante = y;
+        a[indiceHash].inicio = y;
     } else if (atual == NULL) {
         // Inserir no final
-        y->ante = lista.fim;
-        lista.fim->prox = y;
-        lista.fim = y;
+        y->ante = a[indiceHash].fim;
+        a[indiceHash].fim->prox = y;
+        a[indiceHash].fim = y;
     } else {
         // Inserir no meio
         y->prox = atual;
@@ -84,7 +90,7 @@ bool insere(Aluno *y, int indiceHash) {
         atual->ante = y;
     }
 
-    lista.quantidade++;
+    a[indiceHash].quantidade++;
     return true;
 }
 
@@ -278,19 +284,45 @@ int retornaValorCPF(char * cpf){
     return atoi(var);
 }
 
+int compareString(const void *a, const void *b) {
+    return strcmp((const char*)a, (const char*)b);
+}
+
 //funcao principal
 int main(){
 
-    time_t inicio, fim;
-    inicializa();
-    
-    inicio = clock();
-    processoInsercao();
-    fim = clock();
+    char nomes[10][21] = {
+        "Joao"
+        "Bruno",
+        "Diego",
+        "Carla",
+        "Henrique",
+        "Ana",
+        "Gabriela",
+        "Isabela",
+        "Felipe",
+        "Eduarda",
+    };
+    qsort(nomes, 10, sizeof(nomes[0]), compareString);
 
-    printf("Tempo de leitura: %lf segundos\n", (double)(fim - inicio) / CLOCKS_PER_SEC);
-    system("pause");
-    menu();
+    for (int i = 0; i < 10; i++)
+    {
+        printf("%s\n", nomes[i]);
+    }
+    
+
+
+    // time_t inicio, fim;
+    // inicializa();
+    
+    // inicio = clock();
+    // processoInsercao();
+    // fim = clock();
+
+    // printf("Tempo de leitura: %lf segundos\n", (double)(fim - inicio) / CLOCKS_PER_SEC);
+    // printf("Foram lidos %d repetidos\n", repetidos);
+    // system("pause");
+    // menu();
 
     return 0;
 }
