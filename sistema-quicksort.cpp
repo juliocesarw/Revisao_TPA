@@ -285,7 +285,71 @@ int retornaValorCPF(char * cpf){
 }
 
 int compareString(const void *a, const void *b) {
-    return strcmp((const char*)a, (const char*)b);
+
+    const Aluno * aa = (const Aluno *)a;
+    const Aluno * bb = (const Aluno*)b; 
+
+    return strcmp(aa->nome, bb->nome);
+}
+
+void ordenar(){
+
+    
+    for (int i = 0; i < 100; i++)
+    {
+        Aluno * array[a[i].quantidade];
+        Aluno * ponteiro = a[i].inicio;
+
+        for (int j = 0; j < a[i].quantidade; j++)
+        {
+            array[j] = ponteiro;
+            ponteiro = ponteiro->prox;
+        }//for
+
+        qsort(array, a[i].quantidade, sizeof(array[0]), compareString);
+        
+        // fazendo os apontamentos corretos
+        for ( int r = 0; r < a[i].quantidade; r++)
+        {
+            if(r == 0){
+                array[r]->prox = array[r + 1];
+                array[r]->ante = NULL;
+            }//if
+            else if (r == 99){
+                array[r]->prox == NULL;
+                array[r]->ante = array[r - 1];
+            }//else if
+            else{
+                array[r]->ante = array[r - 1];
+                array[r]->prox = array[r + 1];
+            }//else
+        }//for
+
+        // for (int x = 0; x < a[i].quantidade; x++)
+        // {
+        //     ponteiro 
+        // }
+        
+
+
+    }//for
+
+    //ordernar
+
+    
+
+    // devolvendo para  a lista os nomes em ordem
+    // for (int i = 0; i < 100; i++)
+    // {
+    //     Aluno * ponteiro = a[i].inicio;
+    //     for (int i = 0; i < a[i].quantidade; i++)
+    //     {
+    //         ponteiro-
+    //     }
+    // }
+    
+
+    
 }
 
 //funcao principal
