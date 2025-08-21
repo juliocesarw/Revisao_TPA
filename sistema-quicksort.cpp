@@ -47,7 +47,8 @@ Aluno * verificacaoCPF(char * cpf, int indice);
 void pesquisarPorCPF();
 void excluir(Aluno * ponteiro, int indice);
 int retornaValorCPF(char * cpf);
-int compareString(const void *a, const void *b);
+int compara(const void *a, const void *b);
+void ordena();
 
 //============================================================================================
 bool insere(Aluno *y, int indiceHash) {
@@ -183,8 +184,6 @@ void menu(){
             imprimirAlunos();
         break;
         default:
-            printf("\n\nopcao inválida!!\n\n");
-            system("pause");
         break;
         }
     } while (x != 0);
@@ -284,109 +283,59 @@ int retornaValorCPF(char * cpf){
     return atoi(var);
 }
 
-int compareString(const void *a, const void *b) {
-
-    const Aluno * aa = (const Aluno *)a;
-    const Aluno * bb = (const Aluno*)b; 
-
-    return strcmp(aa->nome, bb->nome);
+int compara(const void* a, const void* b) {
+ //comparar os dois nomes..
+    Aluno **a1;
+    Aluno **a2;
+    a1 = (Aluno**)a;
+    a2 = (Aluno**)b;
+    int retorno = strcmp((*a1)->nome, (*a2)->nome);
+    return retorno;
 }
 
-void ordenar(){
 
-    
-    for (int i = 0; i < 100; i++)
+void ordena(){
+    for (int indice = 0; indice < 100; indice++)
     {
-        Aluno * array[a[i].quantidade];
-        Aluno * ponteiro = a[i].inicio;
-
-        for (int j = 0; j < a[i].quantidade; j++)
-        {
-            array[j] = ponteiro;
-            ponteiro = ponteiro->prox;
-        }//for
-
-        qsort(array, a[i].quantidade, sizeof(array[0]), compareString);
-        
-        // fazendo os apontamentos corretos
-        for ( int r = 0; r < a[i].quantidade; r++)
-        {
-            if(r == 0){
-                array[r]->prox = array[r + 1];
-                array[r]->ante = NULL;
-            }//if
-            else if (r == 99){
-                array[r]->prox == NULL;
-                array[r]->ante = array[r - 1];
-            }//else if
-            else{
-                array[r]->ante = array[r - 1];
-                array[r]->prox = array[r + 1];
-            }//else
-        }//for
-
-        // for (int x = 0; x < a[i].quantidade; x++)
-        // {
-        //     ponteiro 
-        // }
-        
-
-
-    }//for
-
-    //ordernar
-
-    
-
-    // devolvendo para  a lista os nomes em ordem
-    // for (int i = 0; i < 100; i++)
-    // {
-    //     Aluno * ponteiro = a[i].inicio;
-    //     for (int i = 0; i < a[i].quantidade; i++)
-    //     {
-    //         ponteiro-
-    //     }
-    // }
-    
-
+        Aluno **v;
+        Aluno *atual = a[indice].inicio;
+        v = new Aluno*[a[indice].quantidade];
+        printf("quantidade: %d\n",a[indice].quantidade);
+        for(int i=0; i<a[indice].quantidade; i++){
+            v[i] = atual;
+            atual = atual->prox;
+        }
+        qsort(v,a[indice].quantidade,sizeof(Aluno*),compara);
+        a[indice].inicio = v[0];
+        a[indice].inicio->ante = NULL;
+        a[indice].inicio->prox = v[1];
+        atual = v[1];
+        for(int i=1; i<a[indice].quantidade-1; i++){
+            atual->prox = v[i+1];
+            atual->ante = v[i-1];
+            atual=atual->prox;
+        }
+        a[indice].fim = v[a[indice].quantidade-1];
+        a[indice].fim->prox = NULL;
+        a[indice].fim->ante = v[a[indice].quantidade-2];
+    }
     
 }
 
 //funcao principal
 int main(){
 
-    char nomes[10][21] = {
-        "Joao"
-        "Bruno",
-        "Diego",
-        "Carla",
-        "Henrique",
-        "Ana",
-        "Gabriela",
-        "Isabela",
-        "Felipe",
-        "Eduarda",
-    };
-    qsort(nomes, 10, sizeof(nomes[0]), compareString);
+    time_t inicio, fim;
+    inicializa();
+    inicio = clock();
+    processoInsercao();
+    fim = clock();
+    ordena();
 
-    for (int i = 0; i < 10; i++)
-    {
-        printf("%s\n", nomes[i]);
-    }
-    
-
-
-    // time_t inicio, fim;
-    // inicializa();
-    
-    // inicio = clock();
-    // processoInsercao();
-    // fim = clock();
-
-    // printf("Tempo de leitura: %lf segundos\n", (double)(fim - inicio) / CLOCKS_PER_SEC);
-    // printf("Foram lidos %d repetidos\n", repetidos);
-    // system("pause");
-    // menu();
+    printf("Tempo de leitura: %lf segundos\n", (double)(fim - inicio) / CLOCKS_PER_SEC);
+    printf("Foram lidos %d repetidos\n", repetidos);
+    system("pause");
+    menu();
 
     return 0;
 }
